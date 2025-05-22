@@ -2,12 +2,32 @@ import { Router } from 'express';
 
 export const router = Router();
 
+// User endpoints
+router.get('/users/:id', (req, res) => {
+    console.log('req.params', req.params);
+    res.status(200);
+    res.json(userData);
+})
+
+router.put('/users/:id', (req, res) => {
+    console.log('req.params:', req.params);
+    console.log('req.body:', req.body);
+    userData.email = req.body.email;
+    userData.username = req.body.username;
+})
+
 // Workout endpoints
 router.get('/workouts', (req, res) => {
     console.log('req', req.query)
     res.status(200);
     res.json(pages[`page${req.query.page}`]);
 })
+
+const userData = {
+    "id": 5,
+    "username": "ikazantzis",
+    "email": "ikazantzis@test.com"
+}
 
 const pages = {
     page0: {
