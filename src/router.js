@@ -7,27 +7,45 @@ router.get('/users/:id', (req, res) => {
     console.log('req.params', req.params);
     res.status(200);
     res.json(userData);
-})
+});
 
 router.put('/users/:id', (req, res) => {
     console.log('req.params:', req.params);
     console.log('req.body:', req.body);
     userData.email = req.body.email;
     userData.username = req.body.username;
-})
+});
+
+// Exercise endpoints
+router.get('/exercises', (req, res) => {
+    res.status(200);
+    res.json(exercises);
+});
+
+const exercises = {
+    'Chest': {key: 1, exercises: [{key: 1, name: 'Bench Press', muscleGroup: 'Chest'}, {key: 2, name: 'Pec Dec', muscleGroup: 'Chest'}, {key: 3, name: 'Dumbbel Bench Press', muscleGroup: 'Chest'}, {key: 4, name: 'Incline Bench Press', muscleGroup: 'Chest'}]},
+    'Back': {key: 2, exercises: [{key: 5, name: 'Pull-up', muscleGroup: 'Back'}, {key: 6, name: 'Lat Pull Down', muscleGroup: 'Back'}, {key: 7, name: 'Rows', muscleGroup: 'Back'}]},
+    'Legs': {key: 3, exercises: [{key: 8, name: 'Leg Press', muscleGroup: 'Legs'}, {key: 9, name: 'Squat', muscleGroup: 'Legs'}, {key: 10, name: 'Deadlift', muscleGroup: 'Legs'}, {key: 11, name: 'Quad Extensions', muscleGroup: 'Legs'}]}
+};
 
 // Workout endpoints
 router.get('/workouts', (req, res) => {
     console.log('req', req.query)
     res.status(200);
     res.json(pages[`page${req.query.page}`]);
+});
+
+router.post('/workouts', (req, res) => {
+    console.log(req.body);
+    res.status(200);
+    res.json({ success: true, errorMessage: null });
 })
 
 const userData = {
     "id": 5,
     "username": "ikazantzis",
     "email": "ikazantzis@test.com"
-}
+};
 
 const pages = {
     page0: {
@@ -584,4 +602,4 @@ const pages = {
         "numberOfElements": 10,
         "empty": false
     },
-}
+};
