@@ -9,7 +9,8 @@ const workoutSchema = new mongoose.Schema({
             weight: Number,
             reps: Number
         }]
-    }]
+    }],
+    userId: { type: String, required: true }
 }, { timestamps: true });
 
 export default mongoose.model('workout', workoutSchema);
