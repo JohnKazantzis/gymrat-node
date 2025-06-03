@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import MuscleGroup from './db/models/muscleGroup.js';
+import Workout from './db/models/workout.js';
 
 export const router = Router();
 
@@ -17,9 +19,14 @@ router.put('/users/:id', (req, res) => {
 });
 
 // Exercise endpoints
-router.get('/exercises', (req, res) => {
-    res.status(200);
-    res.json(exercises);
+router.get('/exercises', async (req, res) => {
+    try {
+        res.status(200);
+        res.json(await MuscleGroup.find({}).exec());
+    } catch(e) {
+        res.status(500);
+        res.json({ success: false, error: 'An internal error occured.' })
+    }
 });
 
 const exercises = {
@@ -35,11 +42,17 @@ router.get('/workouts', (req, res) => {
     res.json(pages[`page${req.query.page}`]);
 });
 
-router.post('/workouts', (req, res) => {
-    console.log(req.body);
-    res.status(200);
-    res.json({ success: true, errorMessage: null });
-})
+router.post('/workouts', async (req, res) => {
+    try {
+        res.status(200);
+        const workoutToInsert = { exercises: req.body };
+        await Workout.create(workoutToInsert);
+        res.json({ success: true, error: null })
+    } catch(e) {
+        res.status(500);
+        res.json({ success: false, error: 'An internal error occured.' })
+    }
+});
 
 const userData = {
     "id": 5,
