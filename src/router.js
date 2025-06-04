@@ -24,16 +24,11 @@ router.get('/exercises', async (req, res) => {
         res.status(200);
         res.json(await MuscleGroup.find({}).exec());
     } catch(e) {
+        console.log(e);
         res.status(500);
         res.json({ success: false, error: 'An internal error occured.' })
     }
 });
-
-const exercises = {
-    'Chest': {key: 1, exercises: [{key: 1, name: 'Bench Press', muscleGroup: 'Chest'}, {key: 2, name: 'Pec Dec', muscleGroup: 'Chest'}, {key: 3, name: 'Dumbbel Bench Press', muscleGroup: 'Chest'}, {key: 4, name: 'Incline Bench Press', muscleGroup: 'Chest'}]},
-    'Back': {key: 2, exercises: [{key: 5, name: 'Pull-up', muscleGroup: 'Back'}, {key: 6, name: 'Lat Pull Down', muscleGroup: 'Back'}, {key: 7, name: 'Rows', muscleGroup: 'Back'}]},
-    'Legs': {key: 3, exercises: [{key: 8, name: 'Leg Press', muscleGroup: 'Legs'}, {key: 9, name: 'Squat', muscleGroup: 'Legs'}, {key: 10, name: 'Deadlift', muscleGroup: 'Legs'}, {key: 11, name: 'Quad Extensions', muscleGroup: 'Legs'}]}
-};
 
 // Workout endpoints
 router.get('/workouts', async (req, res) => {
@@ -44,27 +39,27 @@ router.get('/workouts', async (req, res) => {
     try {
         res.status(200);
         const workouts = await Workout.find({ userId: '5' }).skip(offset).limit(limit).exec();
-        console.log('# workouts: ', workouts)
+        const totalElements = await Workout.countDocuments({ userId: '5' });
         const response = {
-            totalElements: workouts.length,
-            totalPages: Math.ceil(workouts.length / limit),
+            totalElements: totalElements,
+            totalPages: Math.ceil(totalElements / limit),
             pageNumber: parseInt(req.query.page),
             first: req.query.page === '0',
-            last: req.query.page === (Math.ceil(workouts.length / limit) - 1).toString(),
+            last: req.query.page === (Math.ceil(totalElements / limit) - 1).toString(),
             workouts: workouts.map(workout => {
                 const muscleGroups = new Set();
                 workout.exercises.forEach(workout => muscleGroups.add(workout.muscleGroup));
                 return {
                     id: workout._id,
-                    workoutDate: workout.createdAt,
+                    workoutDate: new Date(workout.createdAt).toLocaleDateString(),
                     muscleGroups: Array.from(muscleGroups),
                     exercises: workout.exercises
                 }
             })
         };
-        console.log('# response: ', response)
         res.json(response);
     } catch(e) {
+        console.log(e);
         res.status(500);
         res.json({ success: false, error: 'An internal error occured.' })
     }
@@ -77,6 +72,7 @@ router.post('/workouts', async (req, res) => {
         await Workout.create(workoutToInsert);
         res.json({ success: true, error: null })
     } catch(e) {
+        console.log(e);
         res.status(500);
         res.json({ success: false, error: 'An internal error occured.' })
     }
