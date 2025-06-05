@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
+import "dotenv/config.js";
 
-const connect = () => mongoose.connect('mongodb+srv://gkazantzis96:XDxoHibVpV3gHHZP@gymrat.eqzdl0n.mongodb.net/?retryWrites=true&w=majority&appName=gymrat');
+const connect = () => mongoose.connect(process.env.DATABASE_URL);
 
 export default connect;

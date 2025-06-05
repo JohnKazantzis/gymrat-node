@@ -24,7 +24,7 @@ router.get('/exercises', async (req, res) => {
         res.status(200);
         res.json(await MuscleGroup.find({}).exec());
     } catch(e) {
-        console.log(e);
+        console.log('Error:', e);
         res.status(500);
         res.json({ success: false, error: 'An internal error occured.' })
     }
@@ -59,7 +59,7 @@ router.get('/workouts', async (req, res) => {
         };
         res.json(response);
     } catch(e) {
-        console.log(e);
+        console.log('Error:', e);
         res.status(500);
         res.json({ success: false, error: 'An internal error occured.' })
     }
@@ -72,7 +72,7 @@ router.post('/workouts', async (req, res) => {
         await Workout.create(workoutToInsert);
         res.json({ success: true, error: null })
     } catch(e) {
-        console.log(e);
+        console.log('Error:', e);
         res.status(500);
         res.json({ success: false, error: 'An internal error occured.' })
     }
