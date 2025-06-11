@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import MuscleGroup from './db/models/muscleGroup.js';
 import Workout from './db/models/workout.js';
+import User from './db/models/user.js';
+import { generateHash, compareHash } from './security/hashing.js';
 
 export const router = Router();
 
@@ -75,6 +77,23 @@ router.post('/workouts', async (req, res) => {
         console.log('Error:', e);
         res.status(500);
         res.json({ success: false, error: 'An internal error occured.' })
+    }
+});
+
+// Authentication endpoints
+router.post('/signup', async (req, res) => {
+    try {
+        const user = req.body;
+        console.log('user: ', user);
+
+        const hashedPassword = await generateHash(user.password);
+        console.log('hased password: ', hashedPassword);
+
+        const newUser = await User.create({ ...user, password: hashedPassword });
+        res.json({ success: true, userId: newUser._id });
+    } catch(e) {
+        res.status(500);
+        res.json({ success: false, error: 'An internal error occured.' });
     }
 });
 
