@@ -90,12 +90,32 @@ router.post('/signup', async (req, res) => {
         console.log('hased password: ', hashedPassword);
 
         const newUser = await User.create({ ...user, password: hashedPassword });
+        res.status(200);
         res.json({ success: true, userId: newUser._id });
     } catch(e) {
         res.status(500);
         res.json({ success: false, error: 'An internal error occured.' });
     }
 });
+
+router.post('/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const user = await User.findOne({ username: username }).exec();
+        console.log('user', user);
+
+        res.status(200);
+        if(user && await compareHash(password, user.password)) {
+            res.json({ success: true, userId: user._id });
+            return;
+        }
+        res.json({ success: false, error: 'The username or password is wrong' });
+    } catch (error) {
+        console.log(error)
+        res.status(500);
+        res.json({ success: false, error: 'An internal error occured.' });
+    }
+})
 
 const userData = {
     "id": 5,
